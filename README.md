@@ -33,7 +33,7 @@ Este projeto utiliza web scraping para automatizar a busca de vagas de emprego n
 
 1. **Clone o repositório:**
 ```bash
-git clone <url-do-repositorio>
+git clone https://github.com/Benevanio/vagas-full.git
 cd vagas-full
 ```
 
