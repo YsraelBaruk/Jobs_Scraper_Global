@@ -1,6 +1,6 @@
 # 🚀 LinkedIn Jobs Scraper Brasil
 
-Um bot automatizado para buscar e extrair vagas de emprego do LinkedIn focado no mercado brasileiro de tecnologia.
+Um bot automatizado para buscar e extrair vagas de emprego do LinkedIn focado no mercado de tecnologia.
 
 ## 📋 Descrição
 
