@@ -25,6 +25,7 @@
   "author": "Bene Tesla Dev",
   "license": "ISC",
   "dependencies": {
+    "pdfkit": "^0.18.0",
     "puppeteer-core": "^24.22.3",
     "xlsx": "^0.18.5"
   },

@@ -4,7 +4,13 @@ function buildSearchUrl(keyword, config) {
   const url = new URL("https://www.linkedin.com/jobs/search/");
   url.searchParams.set("keywords", keyword);
   url.searchParams.set("location", config.searchLocation);
+  url.searchParams.set("geoId", config.searchGeoId);
   url.searchParams.set("lang", config.searchLanguage);
+  // f_WT=2 = remoto; f_WT=3 = híbrido; f_WT=1 = presencial
+  url.searchParams.set("f_WT", "2");
+  if (config.jobTypes) {
+    url.searchParams.set("f_JT", config.jobTypes);
+  }
   return url.toString();
 }
 

@@ -1,35 +1,14 @@
 const DEFAULT_KEYWORDS = [
-  "NodeJS",
-  "JavaScript Full Stack",
-  "Suporte",
-  "Sustentação",
-  "Mulesoft Java",
-  "Java Pleno",
-  "Java Senior",
-  "JavaScript Senior",
-  "ReactJS",
-  "React Native",
-  "Angular",
-  "VueJS",
-  "Spring Boot",
-  "Project Manager",
-  "Scrum Master",
+  "UX Designer",
+  "UI Designer",
+  "UX UI Designer",
+  "Product Designer",
+  "UX Researcher",
+  "Product Manager",
   "Product Owner",
-  "Analista de Sistemas",
-  "Analista de Suporte",
-  "Analista de Sustentação",
-  "Analista de Testes",
-  "QA",
-  "Testes Automatizados",
-  "DevOps",
-  "Cloud Engineer",
-  "AWS",
-  "Azure",
-  "Google Cloud",
-  "Data Engineer",
-  "Data Scientist",
-  "Machine Learning",
-  "Inteligencia Artificial"
+  "PO Remoto",
+  "Product Manager Remoto",
+  "Gerente de Produto"
 ];
 
 function parseBoolean(value, fallback) {
@@ -79,8 +58,12 @@ export function getConfig() {
       height: parseNumber(process.env.VIEWPORT_HEIGHT, 800)
     },
     outputFile: process.env.OUTPUT_FILE || "vagas_linkedin.xlsx",
-    searchLocation: process.env.SEARCH_LOCATION || "Worldwide",
-    searchLanguage: process.env.SEARCH_LANGUAGE || "en",
+    pdfFile: process.env.PDF_FILE || "vagas_linkedin.pdf",
+    searchLocation: process.env.SEARCH_LOCATION || "Brasil",
+    searchGeoId: process.env.SEARCH_GEO_ID || "106057199",
+    searchLanguage: process.env.SEARCH_LANGUAGE || "pt",
+    remoteOnly: parseBoolean(process.env.REMOTE_ONLY, true),
+    jobTypes: process.env.JOB_TYPES || "C,F",
     keywords: parseKeywords(process.env.SEARCH_KEYWORDS)
   };
 }

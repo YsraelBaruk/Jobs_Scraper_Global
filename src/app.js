@@ -1,6 +1,6 @@
 import { openBrowser } from "./browser.js";
 import { getConfig } from "./config.js";
-import { exportToExcel } from "./exporter.js";
+import { exportToExcel, exportToPDF } from "./exporter.js";
 import { scrapeLinkedinJobs } from "./linkedinScraper.js";
 import { logInfo } from "./logger.js";
 
@@ -17,6 +17,7 @@ export async function run() {
 
     const jobs = await scrapeLinkedinJobs(page, config);
     exportToExcel(jobs, config.outputFile);
+    await exportToPDF(jobs, config.pdfFile);
 
     logInfo(`Total de vagas unicas exportadas: ${jobs.length}`);
   } finally {
