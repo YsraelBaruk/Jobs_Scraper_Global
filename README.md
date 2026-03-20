@@ -18,6 +18,30 @@ Bot de automacao para buscar vagas no LinkedIn com foco em Brasil remoto e expor
 - `src/linkedinScraper.js`: coleta HTTP, paginacao e extracao das vagas
 - `src/exporter.js`: geracao de Excel e PDF
 - `src/logger.js`: logs padronizados
+- `src/jobsApiApp.js`: monta as rotas da API Express (reutilizado nos testes)
+- `src/server.js`: entrypoint da API (`dotenv` + listen)
+- `test/`: testes automatizados (Vitest)
+
+## Testes e CI (validar antes do PR)
+
+O workflow [`.github/workflows/ci.yml`](.github/workflows/ci.yml) roda testes do backend, lint e build do frontend em PRs e em push para `master` e `develop`. No GitHub, ative *branch protection* com o check **CI / validate** obrigatorio se quiser bloquear merge com falha.
+
+**Com dependencias ja instaladas** (raiz + `frontend`):
+
+```bash
+npm run validate
+```
+
+**Espelho do que o CI faz** (reinstala com `npm ci` na raiz e no frontend — mais lento, util antes de abrir PR):
+
+```bash
+npm run validate:ci
+```
+
+Outros comandos:
+
+- `npm test` — apenas testes (Vitest)
+- `npm run test:watch` — Vitest em modo observacao
 
 ## Requisitos
 
