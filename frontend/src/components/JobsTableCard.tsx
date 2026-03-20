@@ -1,7 +1,17 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
+import type { Job, JobsMeta } from "@/types/jobs";
 
-export function JobsTableCard({ meta, filteredJobs, jobs, loading, error, formatDate }) {
+interface JobsTableCardProps {
+  meta: JobsMeta;
+  filteredJobs: Job[];
+  jobs: Job[];
+  loading: boolean;
+  error: string;
+  formatDate: (timestamp: JobsMeta["modifiedAt"]) => string;
+}
+
+export function JobsTableCard({ meta, filteredJobs, jobs, loading, error, formatDate }: JobsTableCardProps) {
   return (
     <Card className="border-white/30 bg-card/90 backdrop-blur">
       <CardHeader>

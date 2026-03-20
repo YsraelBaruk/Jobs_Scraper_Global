@@ -1,8 +1,13 @@
 import { BriefcaseBusiness, FileSpreadsheet } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import type { JobsMeta } from "@/types/jobs";
 
-export function JobsHeaderCard({ meta }) {
+interface JobsHeaderCardProps {
+  meta: JobsMeta;
+}
+
+export function JobsHeaderCard({ meta }: JobsHeaderCardProps) {
   return (
     <Card className="border-white/30 bg-card/85 backdrop-blur">
       <CardHeader className="gap-4 pb-4 md:flex-row md:items-center md:justify-between">

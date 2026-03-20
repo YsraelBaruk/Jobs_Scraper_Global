@@ -1,7 +1,22 @@
 import { RefreshCcw, Search } from "lucide-react";
+import type { Dispatch, SetStateAction } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
+import type { JobFile } from "@/types/jobs";
+
+interface JobsFiltersCardProps {
+  search: string;
+  setSearch: Dispatch<SetStateAction<string>>;
+  keywordFilter: string;
+  setKeywordFilter: Dispatch<SetStateAction<string>>;
+  keywords: string[];
+  selectedFile: string;
+  setSelectedFile: Dispatch<SetStateAction<string>>;
+  files: JobFile[];
+  loading: boolean;
+  onRefresh: () => void;
+}
 
 export function JobsFiltersCard({
   search,
@@ -14,7 +29,7 @@ export function JobsFiltersCard({
   files,
   loading,
   onRefresh,
-}) {
+}: JobsFiltersCardProps) {
   return (
     <Card className="border-white/30 bg-card/85 backdrop-blur">
       <CardContent className="grid gap-3 pt-6 md:grid-cols-4">

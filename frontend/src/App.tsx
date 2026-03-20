@@ -1,9 +1,11 @@
-import { useEffect, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { JobsFiltersCard } from "@/components/JobsFiltersCard";
 import { JobsHeaderCard } from "@/components/JobsHeaderCard";
 import { JobsTableCard } from "@/components/JobsTableCard";
+import { fetchJobFiles, fetchJobsByFile } from "@/services/jobsService";
+import type { Job, JobFile, JobsMeta } from "@/types/jobs";
 
-function formatDate(timestamp) {
+function formatDate(timestamp: JobsMeta["modifiedAt"]): string {
   if (!timestamp) {
     return "-";
   }
@@ -11,12 +13,12 @@ function formatDate(timestamp) {
 }
 
 function App() {
-  const [files, setFiles] = useState([]);
+  const [files, setFiles] = useState<JobFile[]>([]);
   const [selectedFile, setSelectedFile] = useState("");
   const [search, setSearch] = useState("");
   const [keywordFilter, setKeywordFilter] = useState("all");
-  const [jobs, setJobs] = useState([]);
-  const [meta, setMeta] = useState({ file: "", modifiedAt: null, total: 0 });
+  const [jobs, setJobs] = useState<Job[]>([]);
+  const [meta, setMeta] = useState<JobsMeta>({ file: "", modifiedAt: null, total: 0 });
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -46,39 +48,30 @@ function App() {
     });
   }, [jobs, search, keywordFilter]);
 
-  async function loadJobs(fileName) {
+  const loadJobs = useCallback(async (fileName: string) => {
     setLoading(true);
     setError("");
     try {
-      const suffix = fileName ? `?file=${encodeURIComponent(fileName)}` : "";
-      const response = await fetch(`/api/jobs${suffix}`);
-      const payload = await response.json();
-
-      if (!response.ok) {
-        throw new Error(payload.message || "Falha ao carregar vagas.");
-      }
-
-      setJobs(Array.isArray(payload.jobs) ? payload.jobs : []);
+      const data = await fetchJobsByFile(fileName);
+      setJobs(data.jobs);
       setMeta({
-        file: payload.file || "",
-        modifiedAt: payload.modifiedAt || null,
-        total: Number(payload.total || 0),
+        file: data.file,
+        modifiedAt: data.modifiedAt,
+        total: data.total,
       });
-      setSelectedFile(payload.file || fileName || "");
-    } catch (err) {
+      setSelectedFile(data.file || fileName || "");
+    } catch (err: unknown) {
       setJobs([]);
       setMeta({ file: "", modifiedAt: null, total: 0 });
-      setError(err.message || "Erro inesperado ao carregar vagas.");
+      setError(err instanceof Error ? err.message : "Erro inesperado ao carregar vagas.");
     } finally {
       setLoading(false);
     }
-  }
+  }, []);
 
   useEffect(() => {
     async function initializeFiles() {
-      const response = await fetch("/api/jobs/files");
-      const payload = await response.json();
-      const foundFiles = Array.isArray(payload.files) ? payload.files : [];
+      const foundFiles = await fetchJobFiles();
       setFiles(foundFiles);
       if (foundFiles[0]?.file) {
         setSelectedFile(foundFiles[0].file);
@@ -94,7 +87,7 @@ function App() {
     if (selectedFile) {
       loadJobs(selectedFile);
     }
-  }, [selectedFile]);
+  }, [selectedFile, loadJobs]);
 
   return (
     <main className="relative min-h-screen overflow-hidden bg-background px-4 py-8 md:px-8">
