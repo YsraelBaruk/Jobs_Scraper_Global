@@ -1,17 +1,39 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import type { Job, JobsMeta } from "@/types/jobs";
 
 interface JobsTableCardProps {
   meta: JobsMeta;
   filteredJobs: Job[];
+  paginatedJobs: Job[];
   jobs: Job[];
   loading: boolean;
   error: string;
   formatDate: (timestamp: JobsMeta["modifiedAt"]) => string;
+  currentPage: number;
+  totalPages: number;
+  pageSize: number;
+  onPageChange: (page: number) => void;
+  onPageSizeChange: (size: number) => void;
 }
 
-export function JobsTableCard({ meta, filteredJobs, jobs, loading, error, formatDate }: JobsTableCardProps) {
+const PAGE_SIZE_OPTIONS = [15, 25, 50, 100];
+
+export function JobsTableCard({
+  meta,
+  filteredJobs,
+  paginatedJobs,
+  jobs,
+  loading,
+  error,
+  formatDate,
+  currentPage,
+  totalPages,
+  pageSize,
+  onPageChange,
+  onPageSizeChange,
+}: JobsTableCardProps) {
   return (
     <Card className="border-white/30 bg-card/90 backdrop-blur">
       <CardHeader>
@@ -25,6 +47,45 @@ export function JobsTableCard({ meta, filteredJobs, jobs, loading, error, format
           <div className="rounded-md border border-red-400/40 bg-red-500/10 p-4 text-sm text-red-900">{error}</div>
         ) : null}
 
+        <div className="mb-4 flex flex-wrap items-center justify-between gap-3">
+          <p className="text-sm text-muted-foreground">
+            Pagina {currentPage} de {totalPages}
+          </p>
+          <div className="flex items-center gap-2">
+            <label className="text-sm text-muted-foreground" htmlFor="page-size">
+              Itens por pagina
+            </label>
+            <select
+              id="page-size"
+              className="h-9 rounded-md border border-input bg-background px-2 text-sm"
+              value={pageSize}
+              onChange={(event) => onPageSizeChange(Number(event.target.value))}
+            >
+              {PAGE_SIZE_OPTIONS.map((option) => (
+                <option key={option} value={option}>
+                  {option}
+                </option>
+              ))}
+            </select>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => onPageChange(Math.max(1, currentPage - 1))}
+              disabled={currentPage <= 1}
+            >
+              Anterior
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={() => onPageChange(Math.min(totalPages, currentPage + 1))}
+              disabled={currentPage >= totalPages}
+            >
+              Proxima
+            </Button>
+          </div>
+        </div>
+
         <Table>
           <TableHeader>
             <TableRow>
@@ -36,8 +97,8 @@ export function JobsTableCard({ meta, filteredJobs, jobs, loading, error, format
             </TableRow>
           </TableHeader>
           <TableBody>
-            {filteredJobs.map((job, index) => (
-              <TableRow key={`${job.link || index}-${index}`}>
+            {paginatedJobs.map((job, index) => (
+              <TableRow key={`${job.link || `${job.titulo || "vaga"}-${index}`}-${index}`}>
                 <TableCell>{job.palavra || "-"}</TableCell>
                 <TableCell className="font-medium">{job.titulo || "-"}</TableCell>
                 <TableCell>{job.empresa || "-"}</TableCell>

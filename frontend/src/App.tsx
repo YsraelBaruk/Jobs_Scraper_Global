@@ -17,6 +17,8 @@ function App() {
   const [selectedFile, setSelectedFile] = useState("");
   const [search, setSearch] = useState("");
   const [keywordFilter, setKeywordFilter] = useState("all");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize, setPageSize] = useState(25);
   const [jobs, setJobs] = useState<Job[]>([]);
   const [meta, setMeta] = useState<JobsMeta>({ file: "", modifiedAt: null, total: 0 });
   const [loading, setLoading] = useState(false);
@@ -47,6 +49,15 @@ function App() {
       return text.includes(term);
     });
   }, [jobs, search, keywordFilter]);
+
+  const totalPages = useMemo(() => {
+    return Math.max(1, Math.ceil(filteredJobs.length / pageSize));
+  }, [filteredJobs.length, pageSize]);
+
+  const paginatedJobs = useMemo(() => {
+    const start = (currentPage - 1) * pageSize;
+    return filteredJobs.slice(start, start + pageSize);
+  }, [filteredJobs, currentPage, pageSize]);
 
   const loadJobs = useCallback(async (fileName: string) => {
     setLoading(true);
@@ -89,6 +100,14 @@ function App() {
     }
   }, [selectedFile, loadJobs]);
 
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [search, keywordFilter, selectedFile, pageSize]);
+
+  useEffect(() => {
+    setCurrentPage((previous) => Math.min(previous, totalPages));
+  }, [totalPages]);
+
   return (
     <main className="relative min-h-screen overflow-hidden bg-background px-4 py-8 md:px-8">
       <div className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(circle_at_20%_15%,rgba(236,195,117,0.35),transparent_30%),radial-gradient(circle_at_80%_10%,rgba(92,151,191,0.28),transparent_35%),radial-gradient(circle_at_50%_95%,rgba(201,120,99,0.22),transparent_40%)]" />
@@ -112,10 +131,16 @@ function App() {
         <JobsTableCard
           meta={meta}
           filteredJobs={filteredJobs}
+          paginatedJobs={paginatedJobs}
           jobs={jobs}
           loading={loading}
           error={error}
           formatDate={formatDate}
+          currentPage={currentPage}
+          totalPages={totalPages}
+          pageSize={pageSize}
+          onPageChange={setCurrentPage}
+          onPageSizeChange={setPageSize}
         />
       </section>
     </main>

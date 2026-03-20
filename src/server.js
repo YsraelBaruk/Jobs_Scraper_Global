@@ -1,3 +1,4 @@
+import "dotenv/config";
 import cors from "cors";
 import express from "express";
 import { existsSync, readdirSync, statSync } from "fs";
