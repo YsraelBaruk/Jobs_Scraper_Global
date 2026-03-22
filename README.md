@@ -58,6 +58,7 @@ Na raiz:
 - `npm run test`: testes do backend
 - `npm run build`: build do frontend
 - `npm run validate`: teste backend + lint/build frontend
+- `npm run test:coverage`: coverage frontend + backend (threshold 80%)
 
 No backend (`backend/package.json`):
 
@@ -76,6 +77,32 @@ No frontend (`frontend/package.json`):
 - `npm run build`: build de producao
 - `npm run lint`: lint com ESLint
 - `npm run preview`: preview do build
+- `npm run test`: testes com Vitest
+- `npm run test:coverage`: coverage com Vitest (threshold 80%)
+
+## Testes e cobertura
+
+Estrutura de testes:
+
+- backend: `backend/tests/unit` e `backend/tests/integration`
+- frontend: `frontend/tests/unit` e `frontend/tests/integration`
+
+Cobertura minima exigida:
+
+- lines >= 80%
+- statements >= 80%
+- functions >= 80%
+- branches >= 80%
+
+Comandos:
+
+```bash
+npm run test:coverage
+npm --workspace frontend run test:coverage
+npm --workspace backend run test:coverage
+```
+
+Guia de boas praticas de testes: `TESTING.md`.
 
 ## Variaveis de ambiente
 

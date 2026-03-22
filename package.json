@@ -12,6 +12,7 @@
     "scraper": "npm run scraper --workspace=backend",
     "scraper:watch": "npm run scraper:watch --workspace=backend",
     "test": "npm run test --workspace=backend",
+    "test:coverage": "npm run test:coverage --workspace=frontend && npm run test:coverage --workspace=backend",
     "build": "npm run build --workspace=frontend",
     "validate": "npm run test --workspace=backend && npm run lint --workspace=frontend && npm run build --workspace=frontend"
   },

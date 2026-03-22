@@ -11,3 +11,10 @@ backend/output/
 npm-debug.log
 yarn-error.log
 yarn-debug.log
+
+# Test coverage reports
+coverage/
+frontend/coverage/
+backend/coverage/
+*.lcov
+.nyc_output/
