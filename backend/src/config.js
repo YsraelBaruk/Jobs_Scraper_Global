@@ -1,4 +1,4 @@
-const DEFAULT_KEYWORDS = [  
+const DEFAULT_KEYWORDS = [
   "Java",
   "JavaScript",
   "React",
@@ -7,6 +7,13 @@ const DEFAULT_KEYWORDS = [
   "Desenvolvedor Junior",
   "Desenvolvedor Pleno",
 ];
+
+const DEFAULT_KEYWORDS_WITH_COMPANY_ID = {
+  "Java": ["1441", "1035", "1009", "10667"],   // ex: Google, Microsoft, IBM, Meta
+  "JavaScript": ["1441", "1035", "1009", "10667"],
+  "React": ["1441", "1035", "1009", "10667"],
+  "Node.js": ["1441", "1035", "1009", "10667"],
+};
 
 function parseBoolean(value, fallback) {
   if (value === undefined) {
@@ -54,6 +61,35 @@ function parseTimeFilter(value, fallback) {
   return /^r\d+$/.test(normalized) ? normalized : fallback;
 }
 
+/**
+ * Faz o parse do mapeamento keyword → company IDs vindo de variável de ambiente.
+ * Formato esperado: "Java:1441,1035;React:1441,10667"
+ * Se não fornecido, usa o mapeamento padrão.
+ */
+function parseKeywordsWithCompanyId(value) {
+  if (!value) {
+    return DEFAULT_KEYWORDS_WITH_COMPANY_ID;
+  }
+
+  const result = {};
+
+  value.split(";").forEach((entry) => {
+    const [keyword, ids] = entry.split(":").map((s) => s.trim());
+    if (!keyword || !ids) return;
+
+    const companyIds = ids
+      .split(",")
+      .map((id) => id.trim())
+      .filter(Boolean);
+
+    if (companyIds.length > 0) {
+      result[keyword] = companyIds;
+    }
+  });
+
+  return Object.keys(result).length > 0 ? result : DEFAULT_KEYWORDS_WITH_COMPANY_ID;
+}
+
 export function getConfig() {
   return {
     headless: parseBoolean(process.env.HEADLESS, false),
@@ -62,7 +98,7 @@ export function getConfig() {
     maxPagesPerKeyword: parseNumber(process.env.MAX_PAGES_PER_KEYWORD, 5),
     viewport: {
       width: parseNumber(process.env.VIEWPORT_WIDTH, 1280),
-      height: parseNumber(process.env.VIEWPORT_HEIGHT, 800)
+      height: parseNumber(process.env.VIEWPORT_HEIGHT, 800),
     },
     outputFile: process.env.OUTPUT_FILE || "output/vagas_linkedin.xlsx",
     pdfFile: process.env.PDF_FILE || "output/vagas_linkedin.pdf",
@@ -73,6 +109,7 @@ export function getConfig() {
     jobTypes: process.env.JOB_TYPES || "C,F",
     // f_TPR examples: r86400 (24h), r604800 (7 dias), r2592000 (30 dias)
     timeFilter: parseTimeFilter(process.env.TIME_FILTER, "r604800"),
-    keywords: parseKeywords(process.env.SEARCH_KEYWORDS)
+    keywords: parseKeywords(process.env.SEARCH_KEYWORDS),
+    keywordsWithCompanyId: parseKeywordsWithCompanyId(process.env.KEYWORDS_WITH_COMPANY_ID),
   };
 }
